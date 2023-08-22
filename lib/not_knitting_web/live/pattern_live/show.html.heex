@@ -1,0 +1,40 @@
+<.header>
+  <%= @pattern.title %>
+  <:subtitle>posted by <%= @pattern.user.username %></:subtitle>
+
+  <:actions :if={@current_user}>
+    <%= if @current_user.id == @pattern.user_id do %>
+      <.link navigate={~p"/patterns/#{@pattern}/show/edit"} phx-click={JS.push_focus()}>
+        <.button>Edit pattern</.button>
+      </.link>
+      <.link
+        phx-click={JS.push("delete", value: %{id: @pattern.id}) |> hide("##{@pattern.id}")}
+        data-confirm="Are you sure?"
+      >
+        Delete
+      </.link>
+    <% end %>
+  </:actions>
+</.header>
+<.back navigate={~p"/patterns"}>Back to all patterns</.back>
+
+<div>
+  <%= @pattern.content %>
+</div>
+
+<.modal
+  :if={@live_action == :edit}
+  id="pattern-modal"
+  show
+  on_cancel={JS.patch(~p"/patterns/#{@pattern}")}
+>
+  <.live_component
+    module={NotKnittingWeb.PatternLive.FormComponent}
+    id={@pattern.id}
+    title={@page_title}
+    action={@live_action}
+    pattern={@pattern}
+    patch={~p"/patterns/#{@pattern}"}
+    current_user={@current_user}
+  />
+</.modal>
