@@ -2,6 +2,8 @@ defmodule NotKnittingWeb.PatternLive.Show do
   use NotKnittingWeb, :live_view
 
   alias NotKnitting.Patterns
+  alias NotKnitting.Comments
+
 
   @impl true
   def mount(_params, _session, socket) do
@@ -24,6 +26,19 @@ defmodule NotKnittingWeb.PatternLive.Show do
 
   end
 
+  def handle_event("new comment", %{"id" => id}, socket) do
+    current_user = socket.assigns.current_user
+    current_pattern = Patterns.get_pattern!(id)
+
+    Comments.create_comment(%{user_id: current_user.id, pattern_id: current_pattern.id})
+      {:noreply,
+      socket
+      |> put_flash(:info, "Comment created successfully")
+  }
+    end
+
+
+
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     {:noreply,
@@ -34,4 +49,5 @@ defmodule NotKnittingWeb.PatternLive.Show do
 
   defp page_title(:show), do: "Show Pattern"
   defp page_title(:edit), do: "Edit Pattern"
+  defp page_title(:new_comment), do: "New Comment"
 end

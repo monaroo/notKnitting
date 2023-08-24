@@ -21,6 +21,13 @@
 <div>
   <%= @pattern.content %>
 </div>
+<.header>
+   <:actions :if={@current_user}>
+    <.link patch={~p"/patterns/#{@pattern}/comments/new"}>
+      <.button>Add a comment...</.button>
+    </.link>
+  </:actions>
+</.header>
 
 <.modal
   :if={@live_action == :edit}
@@ -35,6 +42,24 @@
     action={@live_action}
     pattern={@pattern}
     patch={~p"/patterns/#{@pattern}"}
+    current_user={@current_user}
+  />
+</.modal>
+
+<.modal
+  :if={@live_action == :new_comment}
+  id="comment-modal"
+  show
+  on_cancel={JS.patch(~p"/patterns/#{@pattern}")}
+>
+  <.live_component
+    module={NotKnittingWeb.CommentLive.FormComponent}
+    id={@pattern.id}
+    title={@page_title}
+    action={@live_action}
+    pattern={@pattern}
+    patch={~p"/patterns/#{@pattern}"}
+    comment={%Comments.Comment{}}
     current_user={@current_user}
   />
 </.modal>

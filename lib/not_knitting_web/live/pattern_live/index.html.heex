@@ -51,3 +51,20 @@
     current_user={@current_user}
   />
 </.modal>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="comment-modal"
+  show
+  on_cancel={JS.patch(~p"/patterns/#{@pattern.id}")}
+>
+  <.live_component
+    module={NotKnittingWeb.CommentLive.FormComponent}
+    id={@pattern.id || :new}
+    title={@page_title}
+    action={@live_action}
+    pattern={@pattern}
+    patch={~p"/patterns"}
+    current_user={@current_user}
+  />
+</.modal>

@@ -28,6 +28,8 @@ defmodule NotKnittingWeb.Router do
         live "/patterns/new", PatternLive.Index, :new
         live "/patterns/:id/edit", PatternLive.Index, :edit
         live "/patterns/:id/show/edit", PatternLive.Show, :edit
+        live "/patterns/:id/comments/new", PatternLive.Show, :new_comment
+        live "/comments/new", CommentLive.Index, :new
      end
   end
 
