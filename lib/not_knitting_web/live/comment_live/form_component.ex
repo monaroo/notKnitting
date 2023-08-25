@@ -38,11 +38,20 @@ defmodule NotKnittingWeb.CommentLive.FormComponent do
      |> assign_form(changeset)}
   end
 
+  def update(assigns, socket) do
+    assigns
+    |> Map.keys()
+    |> IO.inspect(label: "generic update, assigns:")
+
+    {:ok,
+     socket}
+
+  end
+
+
   @impl true
   def handle_event("validate", %{"comment" => comment_params}, socket) do
     comment_params = Map.put(comment_params, "pattern_id", socket.assigns.id)
-
-    IO.inspect("---------- validate")
 
     changeset =
       socket.assigns.comment
@@ -59,7 +68,7 @@ defmodule NotKnittingWeb.CommentLive.FormComponent do
     save_comment(socket, socket.assigns.action, comment_params)
   end
 
-  defp save_comment(socket, :edit, comment_params) do
+  defp save_comment(socket, :edit_comment, comment_params) do
     case Comments.update_comment(socket.assigns.comment, comment_params) do
       {:ok, comment} ->
         notify_parent({:saved, comment})
@@ -86,7 +95,25 @@ defmodule NotKnittingWeb.CommentLive.FormComponent do
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset, "error")
+
+        {:noreply, assign_form(socket, changeset)}
+    end
+  end
+
+  defp save_comment(socket, :edit_comment, comment_params) do
+
+    case Comments.update_comment(comment_params) do
+      {:ok, comment} ->
+        IO.inspect("saved ok")
+        notify_parent({:saved, comment})
+        assign(socket, @selected_comment, comment)
+
+        {:noreply,
+         socket
+         |> put_flash(:info, "comment updated successfully")
+         |> push_patch(to: socket.assigns.patch)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
 
         {:noreply, assign_form(socket, changeset)}
     end

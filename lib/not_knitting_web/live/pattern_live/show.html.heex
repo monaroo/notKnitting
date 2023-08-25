@@ -1,28 +1,54 @@
 <.header>
-  <%= @pattern.title %>
+  <.back navigate={~p"/patterns"}>Back to All Patterns</.back>
+  <div class="text-3xl"><%= @pattern.title %></div>
   <:subtitle>posted by <%= @pattern.user.username %></:subtitle>
 
   <:actions :if={@current_user}>
     <%= if @current_user.id == @pattern.user_id do %>
       <.link navigate={~p"/patterns/#{@pattern}/show/edit"} phx-click={JS.push_focus()}>
-        <.button>Edit pattern</.button>
+        <.button>Edit Pattern</.button>
       </.link>
       <.link
         phx-click={JS.push("delete", value: %{id: @pattern.id}) |> hide("##{@pattern.id}")}
         data-confirm="Are you sure?"
       >
-        Delete
+        <div class="mt-5">
+          <.button>Delete Pattern</.button>
+        </div>
       </.link>
     <% end %>
   </:actions>
 </.header>
-<.back navigate={~p"/patterns"}>Back to all patterns</.back>
 
-<div>
+<div class="mt-10">
   <%= @pattern.content %>
 </div>
+<div phx-click-away="deselect-comment">
+    <.table
+      id="comments"
+      rows={@pattern.comments}
+      row_click={fn comment -> JS.push("select-comment", value: %{id: comment.id}) end}
+    >
+      <:col :let={comment}>
+        <span class="font-semibold"><%= Accounts.get_user!(comment.user_id).username %>:</span><span class="font-light ml-3"><%= comment.content %></span>
+      </:col>
+      <:col :let={comment}><%= comment.inserted_at %></:col>
+      <:col :let={comment}>
+        <%= if comment.id == @selected_comment.id do %>
+          <%= if comment.user_id == @current_user.id do %>
+            <.link patch={~p"/patterns/#{@pattern}/comments/edit"}>
+              <.button class="font-xs">edit</.button>
+            </.link>
+            <.link patch={~p"/patterns/#{@pattern}/comments/edit"}>
+              <.button class="font-xs">delete</.button>
+            </.link>
+          <% end %>
+        <% end %>
+      </:col>
+    </.table>
+</div>
 <.header>
-   <:actions :if={@current_user}>
+  <:actions :if={@current_user}>
     <.link patch={~p"/patterns/#{@pattern}/comments/new"}>
       <.button>Add a comment...</.button>
     </.link>
@@ -47,7 +73,7 @@
 </.modal>
 
 <.modal
-  :if={@live_action == :new_comment}
+  :if={@live_action in [:new_comment, :edit_comment]}
   id="comment-modal"
   show
   on_cancel={JS.patch(~p"/patterns/#{@pattern}")}
@@ -59,7 +85,17 @@
     action={@live_action}
     pattern={@pattern}
     patch={~p"/patterns/#{@pattern}"}
-    comment={%Comments.Comment{}}
+    comment={@selected_comment}
     current_user={@current_user}
   />
+  <!--
+haha
+so anyway, you could set @selected_comment to %Comments.Comment{}
+by default when you mount the LV.
+Then if you click on "edit comment", set the @selected_comment to 
+that comment that you clicked on.
+That way, the `comment` that gets passed in on line 71 is either
+a new empty comment or an existing comment that you want to change.
+sure!
+//-->
 </.modal>

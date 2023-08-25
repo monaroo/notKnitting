@@ -6,6 +6,7 @@ defmodule NotKnitting.Patterns.Pattern do
     field :content, :string
     field :title, :string
     belongs_to :user, NotKnitting.Accounts.User
+    has_many :comments, NotKnitting.Comments.Comment
 
     timestamps()
   end

@@ -53,7 +53,7 @@
 </.modal>
 
 <.modal
-  :if={@live_action in [:new, :edit]}
+  :if={@live_action in [:new_comment, :edit_comment]}
   id="comment-modal"
   show
   on_cancel={JS.patch(~p"/patterns/#{@pattern.id}")}

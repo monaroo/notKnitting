@@ -19,7 +19,7 @@ defmodule NotKnitting.Patterns do
   """
   def list_patterns do
     Repo.all(Pattern)
-    |> Repo.preload(:user)
+    |> Repo.preload([:user, :comments])
   end
 
   @doc """
@@ -36,7 +36,7 @@ defmodule NotKnitting.Patterns do
       ** (Ecto.NoResultsError)
 
   """
-  def get_pattern!(id), do: Repo.get!(Pattern, id) |> Repo.preload(:user)
+  def get_pattern!(id), do: Repo.get!(Pattern, id) |> Repo.preload([:user, :comments])
 
   @doc """
   Creates a pattern.
@@ -106,7 +106,7 @@ defmodule NotKnitting.Patterns do
   end
 
   defp preloaded_pattern({:ok, pattern}) do
-    pattern = Repo.preload(pattern, :user)
+    pattern = Repo.preload(pattern, [:user, :comments])
     {:ok, pattern}
   end
 

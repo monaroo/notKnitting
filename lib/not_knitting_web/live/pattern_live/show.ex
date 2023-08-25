@@ -3,10 +3,14 @@ defmodule NotKnittingWeb.PatternLive.Show do
 
   alias NotKnitting.Patterns
   alias NotKnitting.Comments
+  alias NotKnitting.Accounts
 
 
   @impl true
   def mount(_params, _session, socket) do
+    socket =
+    socket
+    |> assign(selected_comment: %Comments.Comment{})
     {:ok, socket}
   end
 
@@ -33,9 +37,22 @@ defmodule NotKnittingWeb.PatternLive.Show do
     Comments.create_comment(%{user_id: current_user.id, pattern_id: current_pattern.id})
       {:noreply,
       socket
+      |> assign(:selected_comment, Comments.get_comment!(id))
       |> put_flash(:info, "Comment created successfully")
   }
     end
+
+    def handle_event("select-comment", %{"id" => id}, socket) do
+         {:noreply,
+         assign(socket, selected_comment: Comments.get_comment!(id))
+         }
+      end
+
+      def handle_event("deselect-comment", _params, socket) do
+        {:noreply,
+        assign(socket, selected_comment: %Comments.Comment{})
+        }
+     end
 
 
 
@@ -50,4 +67,8 @@ defmodule NotKnittingWeb.PatternLive.Show do
   defp page_title(:show), do: "Show Pattern"
   defp page_title(:edit), do: "Edit Pattern"
   defp page_title(:new_comment), do: "New Comment"
+  defp page_title(:edit_comment), do: "Edit Comment"
+
+
+
 end
