@@ -30,6 +30,17 @@ defmodule NotKnittingWeb.Router do
         live "/patterns/:id/show/edit", PatternLive.Show, :edit
         live "/patterns/:id/comments/new", PatternLive.Show, :new_comment
         live "/patterns/:id/comments/:comment_id/edit", PatternLive.Show, :edit_comment
+
+        end
+
+        live_session :protected_messages,
+        on_mount: [
+          {NotKnittingWeb.UserAuth, :ensure_authenticated},
+          {NotKnittingWeb.UserAuth, :require_user_owns_message} ] do
+
+          live "/messages/new", MessageLive.Index, :new
+          live "/messages/:id/edit", MessageLive.Index, :edit
+
         # live "/comments/new", CommentLive.Index, :new
      end
   end
@@ -44,7 +55,11 @@ defmodule NotKnittingWeb.Router do
     live_session :patterns, on_mount: [{NotKnittingWeb.UserAuth, :mount_current_user}] do
     live "/patterns", PatternLive.Index, :index
     live "/patterns/:id", PatternLive.Show, :show
+    end
     # live "/patterns/:id/show/edit", PatternLive.Show, :edit
+    live_session :messages, on_mount: [{NotKnittingWeb.UserAuth, :mount_current_user}] do
+    live "/messages", MessageLive.Index, :index
+
 
   end
 end
