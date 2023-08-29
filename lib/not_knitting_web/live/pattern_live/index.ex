@@ -49,4 +49,13 @@ defmodule NotKnittingWeb.PatternLive.Index do
     end
 
   end
+
+  defp truncate_text(text) do
+    if String.length(text) > 100 do
+      String.slice(text, 0..100) <> "..."
+    else
+      text
+    end
+  end
+
 end

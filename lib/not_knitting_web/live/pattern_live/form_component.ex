@@ -18,13 +18,15 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
+        phx-drop-target={@uploads.photo.ref}
       >
         <.input field={@form[:title]} type="text" label="Title" />
         <.input field={@form[:content]} type="text" label="Content" />
         <.input field={@form[:user_id]} type="hidden" value={@current_user.id} />
+        <div class="font-medium text-sm">Photo</div>
         <.live_file_input upload={@uploads.photo} />
-        <%= for entry <- @uploads.photo.entries do %>
-          <.live_img_preview entry={entry} width="75" />
+        <%= if Enum.any?(@uploads.photo.entries) do %>
+          <.live_img_preview entry={hd(@uploads.photo.entries)} width="75" />
         <% end %>
         <:actions>
           <.button phx-disable-with="Saving...">Save Pattern</.button>
@@ -41,8 +43,8 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign_form(changeset)}
-    # |> allow_upload(:photo, accept: ~w(.jpg .jpeg .png), max_entries: 1)
+     |> assign_form(changeset)
+     |> allow_upload(:photo, accept: ~w(.jpg .jpeg .png))}
   end
 
   @impl true
@@ -56,8 +58,21 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
   end
 
   def handle_event("save", %{"pattern" => pattern_params}, socket) do
+    file_uploads =
+      consume_uploaded_entries(socket, :photo, fn %{path: path}, entry ->
+        dest = Path.join("priv/static/uploads", entry.uuid <> "_" <> entry.client_name)
+        File.cp!(path, dest)
+        {:ok, ~p"/uploads/#{Path.basename(dest)}"}
+      end)
+
+    pattern_params = Map.put(pattern_params, "photo", List.first(file_uploads))
     save_pattern(socket, socket.assigns.action, pattern_params)
   end
+
+  # defp get_entry_extension(entry) do
+  #   [ext | _] = MIME.extensions(entry.client_type)
+  #   ext
+  # end
 
   defp save_pattern(socket, :edit, pattern_params) do
     case Patterns.update_pattern(socket.assigns.pattern, pattern_params) do

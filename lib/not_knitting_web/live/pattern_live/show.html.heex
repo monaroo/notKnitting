@@ -1,5 +1,7 @@
-<.header>
   <.back navigate={~p"/patterns"}>Back to All Patterns</.back>
+
+<.header>
+  <div title="Photo" class="mt-1500"><img src={@pattern.photo} width="400"/></div>
   <div class="text-3xl"><%= @pattern.title %></div>
   <:subtitle>posted by <%= @pattern.user.username %></:subtitle>
 
