@@ -5,6 +5,7 @@ defmodule NotKnitting.Patterns.Pattern do
   schema "patterns" do
     field :content, :string
     field :title, :string
+    field :photo, :string
     belongs_to :user, NotKnitting.Accounts.User
     has_many :comments, NotKnitting.Comments.Comment
 
@@ -14,7 +15,7 @@ defmodule NotKnitting.Patterns.Pattern do
   @doc false
   def changeset(pattern, attrs) do
     pattern
-    |> cast(attrs, [:title, :content, :user_id])
+    |> cast(attrs, [:title, :content, :user_id, :photo])
     |> validate_required([:title, :content, :user_id])
     |> unique_constraint(:title)
     |> foreign_key_constraint(:user_id)

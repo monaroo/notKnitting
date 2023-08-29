@@ -62,6 +62,8 @@ defmodule NotKnittingWeb.CommentLive.FormComponent do
     {:noreply, assign_form(socket, changeset)}
   end
 
+
+
   def handle_event("save", %{"comment" => comment_params}, socket) do
     comment_params = Map.put(comment_params, "pattern_id", socket.assigns.id)
 
@@ -100,24 +102,24 @@ defmodule NotKnittingWeb.CommentLive.FormComponent do
     end
   end
 
-  defp save_comment(socket, :edit_comment, comment_params) do
+  # defp save_comment(socket, :edit_comment, comment_params) do
 
-    case Comments.update_comment(comment_params) do
-      {:ok, comment} ->
-        IO.inspect("saved ok")
-        notify_parent({:saved, comment})
-        assign(socket, @selected_comment, comment)
+  #   case Comments.update_comment(comment_params) do
+  #     {:ok, comment} ->
+  #       IO.inspect("saved ok")
+  #       notify_parent({:saved, comment})
+  #       assign(socket, @selected_comment, comment)
 
-        {:noreply,
-         socket
-         |> put_flash(:info, "comment updated successfully")
-         |> push_patch(to: socket.assigns.patch)}
+  #       {:noreply,
+  #        socket
+  #        |> put_flash(:info, "comment updated successfully")
+  #        |> push_patch(to: socket.assigns.patch)}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+  #     {:error, %Ecto.Changeset{} = changeset} ->
 
-        {:noreply, assign_form(socket, changeset)}
-    end
-  end
+  #       {:noreply, assign_form(socket, changeset)}
+  #   end
+  # end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))

@@ -23,29 +23,39 @@
 <div class="mt-10">
   <%= @pattern.content %>
 </div>
-<div phx-click-away="deselect-comment">
-    <.table
-      id="comments"
-      rows={@pattern.comments}
-      row_click={fn comment -> JS.push("select-comment", value: %{id: comment.id}) end}
-    >
-      <:col :let={comment}>
-        <span class="font-semibold"><%= Accounts.get_user!(comment.user_id).username %>:</span><span class="font-light ml-3"><%= comment.content %></span>
-      </:col>
-      <:col :let={comment}><%= comment.inserted_at %></:col>
-      <:col :let={comment}>
-        <%= if comment.id == @selected_comment.id do %>
-          <%= if comment.user_id == @current_user.id do %>
-            <.link patch={~p"/patterns/#{@pattern}/comments/edit"}>
-              <.button class="font-xs">edit</.button>
-            </.link>
-            <.link patch={~p"/patterns/#{@pattern}/comments/edit"}>
-              <.button class="font-xs">delete</.button>
-            </.link>
-          <% end %>
-        <% end %>
-      </:col>
-    </.table>
+<div>
+  <.table
+    id="comments"
+    rows={@pattern.comments}  >
+    <:col :let={comment}>
+      <p  class="group">
+      <%= Accounts.get_user!(comment.user_id).username %>:
+      <span class="font-light ml-3"><%= comment.content %></span>
+      </p>
+    </:col>
+    <:col :let={comment}><%= comment.inserted_at %></:col>
+    <:col :let={comment}>
+       <%= if comment.user_id == @current_user.id do %> 
+        <div class="invisible group-hover:visible">
+          <.link
+            patch={~p"/patterns/#{@pattern}/comments/#{comment}/edit"}
+          >
+            <.button>
+              <%= Heroicons.icon("pencil", type: "outline", class: "h-3 w-3") %>
+            </.button>
+          </.link>
+          <.link
+            phx-click={
+              JS.push("delete-comment", value: %{id: comment.id})
+            }
+            data-confirm="Delete comment?"
+          >
+            <.button><%= Heroicons.icon("trash", type: "outline", class: "h-3 w-3") %></.button>
+          </.link>
+          </div>
+         <% end %> 
+    </:col>
+  </.table>
 </div>
 <.header>
   <:actions :if={@current_user}>
@@ -90,6 +100,10 @@
   />
   <!--
 haha
+
+    comment={@selected_comment}
+
+
 so anyway, you could set @selected_comment to %Comments.Comment{}
 by default when you mount the LV.
 Then if you click on "edit comment", set the @selected_comment to 

@@ -22,6 +22,10 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
         <.input field={@form[:title]} type="text" label="Title" />
         <.input field={@form[:content]} type="text" label="Content" />
         <.input field={@form[:user_id]} type="hidden" value={@current_user.id} />
+        <.live_file_input upload={@uploads.photo} />
+        <%= for entry <- @uploads.photo.entries do %>
+          <.live_img_preview entry={entry} width="75" />
+        <% end %>
         <:actions>
           <.button phx-disable-with="Saving...">Save Pattern</.button>
         </:actions>
@@ -38,6 +42,7 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign_form(changeset)}
+    # |> allow_upload(:photo, accept: ~w(.jpg .jpeg .png), max_entries: 1)
   end
 
   @impl true
