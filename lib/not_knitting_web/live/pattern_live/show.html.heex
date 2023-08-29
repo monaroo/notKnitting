@@ -1,25 +1,11 @@
-  <.back navigate={~p"/patterns"}>Back to All Patterns</.back>
+  <div class="mb-10"><.back navigate={~p"/patterns"}>Back to All Patterns</.back></div>
 
 <.header>
   <div title="Photo" class="mt-1500"><img src={@pattern.photo} width="400"/></div>
-  <div class="text-3xl"><%= @pattern.title %></div>
+  <div class="mt-10 text-3xl"><%= @pattern.title %></div>
   <:subtitle>posted by <%= @pattern.user.username %></:subtitle>
 
-  <:actions :if={@current_user}>
-    <%= if @current_user.id == @pattern.user_id do %>
-      <.link navigate={~p"/patterns/#{@pattern}/show/edit"} phx-click={JS.push_focus()}>
-        <.button>Edit Pattern</.button>
-      </.link>
-      <.link
-        phx-click={JS.push("delete", value: %{id: @pattern.id}) |> hide("##{@pattern.id}")}
-        data-confirm="Are you sure?"
-      >
-        <div class="mt-5">
-          <.button>Delete Pattern</.button>
-        </div>
-      </.link>
-    <% end %>
-  </:actions>
+
 </.header>
 
 <div class="mt-10">
@@ -65,7 +51,26 @@
       <.button>Add a comment...</.button>
     </.link>
   </:actions>
+    
 </.header>
+
+<.header>
+<:actions :if={@current_user}>
+    <%= if @current_user.id == @pattern.user_id do %>
+      <.link navigate={~p"/patterns/#{@pattern}/show/edit"} phx-click={JS.push_focus()}>
+        Edit Pattern
+      </.link>
+      <.link
+        phx-click={JS.push("delete", value: %{id: @pattern.id}) |> hide("##{@pattern.id}")}
+        data-confirm="Are you sure?"
+      >
+        <div class="mt-5">
+          Delete Pattern
+        </div>
+      </.link>
+    <% end %>
+  </:actions>
+  </.header>
 
 <.modal
   :if={@live_action == :edit}
