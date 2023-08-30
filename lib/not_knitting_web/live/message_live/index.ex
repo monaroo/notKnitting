@@ -39,6 +39,7 @@ defmodule NotKnittingWeb.MessageLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
+
     current_user = socket.assigns.current_user
     %{user_id: user_id} = message = Messages.get_message!(id)
     case current_user do

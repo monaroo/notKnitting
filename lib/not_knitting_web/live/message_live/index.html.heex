@@ -19,7 +19,7 @@
     <%= if @current_user.id == message.user_id do %>
       <.link class="mr-3" patch={~p"/messages/#{message}/edit"}>Edit</.link>
       <.link
-        phx-click={JS.push("delete", value: %{id: id}) |> hide("##{id}")}
+        phx-click={JS.push("delete", value: %{id: message.id}) |> hide("##{id}")}
         data-confirm="Are you sure?"
       >
         Delete
