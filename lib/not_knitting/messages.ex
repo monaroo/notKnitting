@@ -14,8 +14,12 @@ defmodule NotKnitting.Messages do
 
   """
   def list_messages do
-    Repo.all(Message)
-    |> Repo.preload([:user])
+    from(m in Message,
+    order_by: [{:desc, :updated_at}]
+  )
+    |> Repo.all()
+    |> Repo.preload(:user)
+
   end
 
   @doc """

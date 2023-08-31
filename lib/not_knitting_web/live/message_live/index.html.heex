@@ -1,9 +1,17 @@
+
 <.header>
-  All Messages
+  <div class="text-3xl">Live Chat</div>
   <:actions :if={@current_user}>
     <.link patch={~p"/messages/new"}>
       <.button>New Message</.button>
     </.link>
+        
+  </:actions>
+    <:actions :if={@current_user == nil}>
+        <div>
+        <.link class="underline" patch={~p"/users/register"}>Log in</.link> to chat!
+        </div>
+    
   </:actions>
 </.header>
 
@@ -17,12 +25,15 @@
   </:col>
   <:action :let={{id, message}} :if={@current_user}>
     <%= if @current_user.id == message.user_id do %>
-      <.link class="mr-3" patch={~p"/messages/#{message}/edit"}>Edit</.link>
+      <.link class="inline-block" patch={~p"/messages/#{message}/edit"}>
+        <%= Heroicons.icon("pencil", type: "outline", class: "h-3 w-3") %>
+      </.link>
       <.link
+        class="inline-block ml-3"
         phx-click={JS.push("delete", value: %{id: message.id}) |> hide("##{id}")}
-        data-confirm="Are you sure?"
+        data-confirm="Delete message?"
       >
-        Delete
+        <%= Heroicons.icon("trash", type: "outline", class: "h-3 w-3") %>
       </.link>
     <% end %>
   </:action>

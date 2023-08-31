@@ -36,8 +36,7 @@ defmodule NotKnittingWeb.MessageLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign_form(changeset)
-     |> allow_upload(:photo, accept: ~w(.jpg .jpeg .png))}
+     |> assign_form(changeset)}
   end
 
   @impl true
@@ -64,6 +63,9 @@ defmodule NotKnittingWeb.MessageLive.FormComponent do
     case Messages.update_message(socket.assigns.message, message_params) do
       {:ok, message} ->
         notify_parent({:saved, message})
+        IO.inspect("here!!!!!!!")
+        NotKnittingWeb.Endpoint.broadcast_from(self(), "messages", "edit", message)
+        # Phoenix.PubSub.broadcast(NotKnitting.PubSub, "messages", {:message_update, message})
 
         {:noreply,
          socket
@@ -79,10 +81,12 @@ defmodule NotKnittingWeb.MessageLive.FormComponent do
     case Messages.create_message(message_params) do
       {:ok, message} ->
         notify_parent({:saved, message})
+        NotKnittingWeb.Endpoint.broadcast_from(self(), "messages", "new", message)
+
 
         {:noreply,
          socket
-         |> put_flash(:info, "Pattern created successfully")
+         |> put_flash(:info, "Message created successfully")
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

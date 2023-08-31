@@ -61,6 +61,10 @@ config :phoenix, :json_library, Jason
 
 config :ex_heroicons, type: "outline"
 
+config :waffle,
+  storage: Waffle.Storage.Local,
+  asset_host: {:system, "ASSET_HOST"}
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

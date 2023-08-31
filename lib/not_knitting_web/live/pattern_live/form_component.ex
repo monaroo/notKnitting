@@ -2,6 +2,7 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
   use NotKnittingWeb, :live_component
 
   alias NotKnitting.Patterns
+  alias NotKnitting.Photo
 
   @impl true
   def render(assigns) do
@@ -27,6 +28,8 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
         <.live_file_input upload={@uploads.photo} />
         <%= if Enum.any?(@uploads.photo.entries) do %>
           <.live_img_preview entry={hd(@uploads.photo.entries)} width="75" />
+        <% else %>
+          <img src={@pattern.photo} :if={@pattern.photo} width="100"/>
         <% end %>
         <:actions>
           <.button phx-disable-with="Saving...">Save Pattern</.button>
@@ -58,8 +61,14 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
   end
 
   def handle_event("save", %{"pattern" => pattern_params}, socket) do
+    # assign(socket, :photo, Photo.transform(socket.assigns.photo, socket) )
     file_uploads =
       consume_uploaded_entries(socket, :photo, fn %{path: path}, entry ->
+        entry =
+          case Photo.transform(entry.client_name, entry.cancelled?) do
+            {:ok, file} -> Map.replace(entry, :client_name, file)
+            _ -> entry
+          end
         dest = Path.join("priv/static/uploads", entry.uuid <> "_" <> entry.client_name)
         File.cp!(path, dest)
         {:ok, ~p"/uploads/#{Path.basename(dest)}"}
