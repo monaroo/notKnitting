@@ -52,7 +52,8 @@ defmodule NotKnitting.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:ex_heroicons, "~> 2.0.0"},
-      {:waffle, "~> 1.1"}
+      {:waffle, "~> 1.1"},
+      {:waffle_ecto, ">= 0.0.0"}
     ]
   end
 

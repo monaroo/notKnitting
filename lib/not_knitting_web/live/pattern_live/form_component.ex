@@ -62,39 +62,46 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
 
   def handle_event("save", %{"pattern" => pattern_params}, socket) do
     # assign(socket, :photo, Photo.transform(socket.assigns.photo, socket) )
-    file_uploads =
-      consume_uploaded_entries(socket, :photo, fn %{path: path}, entry ->
-        entry =
-          case Photo.transform(entry.client_name, entry.cancelled?) do
-            {:ok, file} -> Map.replace(entry, :client_name, file)
-            _ -> entry
-          end
-        dest = Path.join("priv/static/uploads", entry.uuid <> "_" <> entry.client_name)
-        File.cp!(path, dest)
-        {:ok, ~p"/uploads/#{Path.basename(dest)}"}
+    [result | _] =
+      consume_uploaded_entries(socket, :photo, fn meta, entry ->
+        combined =
+          pattern_params
+          |> Map.merge(%{
+            "photo" => %Plug.Upload{
+              content_type: entry.client_type,
+              filename: entry.client_name,
+              path: meta.path
+            }
+          })
+
+        {:ok, save_pattern(socket, socket.assigns.action, combined)}
       end)
 
-    pattern_params = Map.put(pattern_params, "photo", List.first(file_uploads))
-    save_pattern(socket, socket.assigns.action, pattern_params)
+    case result do
+      {:ok, message} ->
+
+        {:noreply,
+         socket
+         |> put_flash(:info, message)
+         |> push_patch(to: socket.assigns.patch)}
+
+      {:error, changeset} ->
+        {:noreply, assign_form(socket, changeset)}
+    end
+
+    # pattern_params = Map.put(pattern_params, "photo", List.first(file_uploads))
+    # save_pattern(socket, socket.assigns.action, pattern_params)
   end
 
-  # defp get_entry_extension(entry) do
-  #   [ext | _] = MIME.extensions(entry.client_type)
-  #   ext
-  # end
 
   defp save_pattern(socket, :edit, pattern_params) do
     case Patterns.update_pattern(socket.assigns.pattern, pattern_params) do
       {:ok, pattern} ->
         notify_parent({:saved, pattern})
+        {:ok, "Pattern updated successfully"}
 
-        {:noreply,
-         socket
-         |> put_flash(:info, "Pattern updated successfully")
-         |> push_patch(to: socket.assigns.patch)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign_form(socket, changeset)}
+      error ->
+        error
     end
   end
 
@@ -102,14 +109,10 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
     case Patterns.create_pattern(pattern_params) do
       {:ok, pattern} ->
         notify_parent({:saved, pattern})
+        {:ok,  "Pattern created successfully"}
 
-        {:noreply,
-         socket
-         |> put_flash(:info, "Pattern created successfully")
-         |> push_patch(to: socket.assigns.patch)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign_form(socket, changeset)}
+      error ->
+        error
     end
   end
 

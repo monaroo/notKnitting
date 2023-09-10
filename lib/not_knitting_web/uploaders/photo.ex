@@ -1,13 +1,32 @@
 defmodule NotKnitting.Photo do
   use Waffle.Definition
+  use Waffle.Ecto.Definition
 
   # Include ecto support (requires package waffle_ecto installed):
   # use Waffle.Ecto.Definition
 
   @versions [:original, :thumb]
+  @extensions ~w(.jpg .jpeg .gif .png)
+
+  def validate({file, _}) do
+    file_extension = file.file_name |> Path.extname |> String.downcase
+
+    case Enum.member?(@extensions, file_extension) do
+      true -> :ok
+      false -> {:error, "file type is invalid"}
+    end
+  end
 
   def transform(:thumb, _) do
-    {:convert, "-crop -thumbnail 100x100 +repage"}
+    {:convert, "-adaptive-resize 100x100^ -gravity center -extent 100x100"}
+  end
+
+  def filename(version, _) do
+    version
+  end
+
+  def storage_dir(_, {_file, record}) do
+    "uploads/#{record.id}"
   end
 
   # To add a thumbnail version:

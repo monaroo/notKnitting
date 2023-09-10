@@ -9,9 +9,11 @@
 <.table
   id="patterns"
   rows={@streams.patterns}
-  row_click={fn {_id, pattern} -> JS.navigate(~p"/patterns/#{pattern}") end}
+  row_click={fn {id, pattern} -> JS.navigate(~p"/patterns/#{id}") end}
 >
-  <:col :let={{_id, pattern}}><img src={pattern.photo} width="100"/></:col>
+  <:col :let={{_id, pattern}}>
+    <img src={NotKnitting.Photo.url({pattern.photo, pattern}, :thumb)} width="100"/>
+  </:col>
   <:col :let={{_id, pattern}}>
     <%= pattern.title %>
     <div>by <%= pattern.user.username %></div>

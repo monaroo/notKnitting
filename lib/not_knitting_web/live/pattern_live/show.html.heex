@@ -1,7 +1,7 @@
   <div class="mb-10"><.back navigate={~p"/patterns"}>Back to All Patterns</.back></div>
 
 <.header>
-  <div title="Photo" class="mt-1500"><img src={@pattern.photo} width="400"/></div>
+  <div title="Photo" class="mt-1500"><img src={NotKnitting.Photo.url({@pattern.photo, @pattern}, :thumb)} width="400"/></div>
   <div class="mt-10 text-3xl"><%= @pattern.title %></div>
   <:subtitle>posted by <%= @pattern.user.username %></:subtitle>
 

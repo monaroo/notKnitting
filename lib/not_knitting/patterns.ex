@@ -18,7 +18,10 @@ defmodule NotKnitting.Patterns do
 
   """
   def list_patterns do
-    Repo.all(Pattern)
+    from(p in Pattern,
+    order_by: [{:desc, :updated_at}]
+  )
+    |> Repo.all()
     |> Repo.preload([:user, :comments])
   end
 
@@ -51,10 +54,12 @@ defmodule NotKnitting.Patterns do
 
   """
   def create_pattern(attrs \\ %{}) do
-    %Pattern{}
-    |> Pattern.changeset(attrs)
-    |> Repo.insert()
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:pattern, Pattern.changeset(%Pattern{}, attrs))
+    |> Ecto.Multi.update(:pattern_with_photo, &Pattern.photo_changeset(&1.pattern, attrs))
+    |> Repo.transaction()
     |> preloaded_pattern()
+    |> dbg()
   end
 
   @doc """
@@ -103,6 +108,10 @@ defmodule NotKnitting.Patterns do
   """
   def change_pattern(%Pattern{} = pattern, attrs \\ %{}) do
     Pattern.changeset(pattern, attrs)
+  end
+
+  defp preloaded_pattern({:ok, %{pattern_with_photo: pattern}}) do
+    preloaded_pattern({:ok, pattern})
   end
 
   defp preloaded_pattern({:ok, pattern}) do

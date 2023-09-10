@@ -63,6 +63,7 @@ config :ex_heroicons, type: "outline"
 
 config :waffle,
   storage: Waffle.Storage.Local,
+  storage_dir_prefix: "priv/static",
   asset_host: {:system, "ASSET_HOST"}
 
 # Import environment specific config. This must remain at the bottom
