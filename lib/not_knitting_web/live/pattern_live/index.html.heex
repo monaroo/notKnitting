@@ -36,6 +36,9 @@
     <% end %>
   </:action>
 </.table>
+<%= if Enum.count(Patterns.list_patterns) |> IO.inspect(label: ";;;;;;;;") > @page * @limit |> IO.inspect(label: ";;;;;;;;") do %>
+<.button phx-click="load-more">Load More...</.button>
+<% end %>
 
 <.modal
   :if={@live_action in [:new, :edit]}

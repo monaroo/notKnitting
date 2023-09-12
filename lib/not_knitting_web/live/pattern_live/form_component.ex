@@ -61,64 +61,75 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
   end
 
   def handle_event("save", %{"pattern" => pattern_params}, socket) do
-    # assign(socket, :photo, Photo.transform(socket.assigns.photo, socket) )
-    [result | _] =
-      consume_uploaded_entries(socket, :photo, fn meta, entry ->
-        combined =
-          pattern_params
-          |> Map.merge(%{
-            "photo" => %Plug.Upload{
-              content_type: entry.client_type,
-              filename: entry.client_name,
-              path: meta.path
-            }
-          })
+    case socket.assigns.uploads.photo.entries do
+      [] ->
+        save_pattern(socket, socket.assigns.action, pattern_params)
+        |> case_result(socket)
 
-        {:ok, save_pattern(socket, socket.assigns.action, combined)}
-      end)
+      _ ->
+        # assign(socket, :photo, Photo.transform(socket.assigns.photo, socket) )
+        [result | _] =
+          consume_uploaded_entries(socket, :photo, fn meta, entry ->
+            combined =
+              pattern_params
+              |> Map.merge(%{
+                "photo" => %Plug.Upload{
+                  content_type: entry.client_type,
+                  filename: entry.client_name,
+                  path: meta.path
+                }
+              })
 
-    case result do
-      {:ok, message} ->
+            {:ok, save_pattern(socket, socket.assigns.action, combined)}
+          end)
 
-        {:noreply,
-         socket
-         |> put_flash(:info, message)
-         |> push_patch(to: socket.assigns.patch)}
-
-      {:error, changeset} ->
-        {:noreply, assign_form(socket, changeset)}
+        case_result(result, socket)
     end
 
-    # pattern_params = Map.put(pattern_params, "photo", List.first(file_uploads))
-    # save_pattern(socket, socket.assigns.action, pattern_params)
+end
+
+# pattern_params = Map.put(pattern_params, "photo", List.first(file_uploads))
+# save_pattern(socket, socket.assigns.action, pattern_params)
+
+defp save_pattern(socket, :edit, pattern_params) do
+  case Patterns.update_pattern(socket.assigns.pattern, pattern_params) do
+    {:ok, pattern} ->
+      notify_parent({:saved, pattern})
+      {:ok, "Pattern updated successfully"}
+
+    error ->
+      error
   end
+end
 
+defp save_pattern(socket, :new, pattern_params) do
+  case Patterns.create_pattern(pattern_params) do
+    {:ok, pattern} ->
+      notify_parent({:saved, pattern})
+      {:ok, "Pattern created successfully"}
 
-  defp save_pattern(socket, :edit, pattern_params) do
-    case Patterns.update_pattern(socket.assigns.pattern, pattern_params) do
-      {:ok, pattern} ->
-        notify_parent({:saved, pattern})
-        {:ok, "Pattern updated successfully"}
+    error ->
+      error
+  end
+end
 
-      error ->
-        error
+defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+  assign(socket, :form, to_form(changeset))
+end
+
+defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
+
+def case_result(result, socket) do
+  case result do
+    {:ok, message} ->
+      {:noreply,
+       socket
+       |> put_flash(:info, message)
+       |> push_patch(to: socket.assigns.patch)}
+
+    {:error, changeset} ->
+      {:noreply, assign_form(socket, changeset)}
     end
   end
 
-  defp save_pattern(socket, :new, pattern_params) do
-    case Patterns.create_pattern(pattern_params) do
-      {:ok, pattern} ->
-        notify_parent({:saved, pattern})
-        {:ok,  "Pattern created successfully"}
-
-      error ->
-        error
-    end
-  end
-
-  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
-    assign(socket, :form, to_form(changeset))
-  end
-
-  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end

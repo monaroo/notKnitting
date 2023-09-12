@@ -18,7 +18,8 @@ defmodule NotKnitting.Photo do
   end
 
   def transform(:thumb, _) do
-    {:convert, "-adaptive-resize 100x100^ -gravity center -extent 100x100"}
+    {:convert, "-resize 100x100^ -gravity center -extent 100x100"}
+    # {:convert, "-crop 100x100^ -gravity center "}
   end
 
   def filename(version, _) do

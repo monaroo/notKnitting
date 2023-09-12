@@ -4,9 +4,18 @@ defmodule NotKnittingWeb.PatternLive.Index do
   alias NotKnitting.Patterns
   alias NotKnitting.Patterns.Pattern
 
+  @limit 7
+
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :patterns, Patterns.list_patterns())}
+    # {:ok, stream(socket, :patterns, Patterns.list_patterns())}
+
+    {:ok,
+    socket
+    |> assign(:page, 1)
+    |> assign(:limit, @limit)
+    |> stream(:patterns, Patterns.list_patterns(limit: @limit))
+  }
   end
 
   @impl true
@@ -49,6 +58,23 @@ defmodule NotKnittingWeb.PatternLive.Index do
       _ -> {:noreply, socket}
     end
 
+  end
+
+  @impl true
+  def handle_event("load-more", _params, socket) do
+    offset =  socket.assigns.page * @limit
+    patterns = Patterns.list_patterns(offset: offset, limit: @limit)
+
+    {:noreply,
+      socket
+      |> assign(:page, socket.assigns.page + 1)
+      |> stream_insert_many(:patterns, patterns)}
+  end
+
+  defp stream_insert_many(socket, ref, patterns) do
+    Enum.reduce(patterns, socket, fn pattern, socket ->
+      stream_insert(socket, ref, pattern)
+    end)
   end
 
   defp truncate_text(text) do

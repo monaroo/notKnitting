@@ -17,13 +17,20 @@ defmodule NotKnitting.Patterns do
       [%Pattern{}, ...]
 
   """
-  def list_patterns do
+  def list_patterns(opts \\ []) do
+    limit = Keyword.get(opts, :limit)
+    offset = Keyword.get(opts, :offset, 0)
+
     from(p in Pattern,
     order_by: [{:desc, :updated_at}]
   )
+    |> limit(^limit)
+    |> offset(^offset)
     |> Repo.all()
     |> Repo.preload([:user, :comments])
   end
+
+
 
   @doc """
   Gets a single pattern.

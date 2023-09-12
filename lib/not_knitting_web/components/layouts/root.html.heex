@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-    <nav class="py-2 px-6 bg-amber-50  text-black">
+    <nav class="py-2 px-6 bg-amber-50  text-black font-serif">
       <ul class="flex justify-start gap-8">
         <li><a href="/">home</a></li>
         <li><a href="/patterns">patterns</a></li>
         <li><a href="/messages">live chat</a></li>
         <!-- Add more links if needed -->
       </ul>
-      <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
+      <ul class="relative z-10 flex items-center gap-4 px-4 font-serif sm:px-6 lg:px-8 justify-end">
         <%= if @current_user do %>
           <li class="text-[0.8125rem] leading-6 text-zinc-900">
             <%= @current_user.email %>
@@ -48,7 +48,7 @@
         <% end %>
       </ul>
     </nav>
-    <h1 class="bg-amber-100 m-15 p-10 pl-20 text-5xl text-black font-light"> notKnitting </h1>
+    <h1 class="bg-amber-100 m-15 p-10 pl-20 text-5xl text-black font-light font-serif"> notKnitting </h1>
 <html lang="en" class="[scrollbar-gutter:stable]">
   <head>
     <meta charset="utf-8" />

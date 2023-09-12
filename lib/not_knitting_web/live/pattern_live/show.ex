@@ -31,6 +31,7 @@ defmodule NotKnittingWeb.PatternLive.Show do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
+    id = List.last(String.split(id, "-"))
     current_user = socket.assigns.current_user
     %{user_id: user_id} = pattern = Patterns.get_pattern!(id)
 
@@ -49,6 +50,7 @@ defmodule NotKnittingWeb.PatternLive.Show do
   end
 
   def handle_event("new comment", %{"id" => id}, socket) do
+    id = List.last(String.split(id, "-"))
     current_user = socket.assigns.current_user
     current_pattern = Patterns.get_pattern!(id)
 
@@ -62,6 +64,7 @@ defmodule NotKnittingWeb.PatternLive.Show do
 
   @impl true
   def handle_params(%{"id" => id} = params, _, socket) do
+    id = List.last(String.split(id, "-"))
     comment =
       case Map.get(params, "comment_id") do
         nil -> %Comments.Comment{}
