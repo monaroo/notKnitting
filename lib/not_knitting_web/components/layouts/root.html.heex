@@ -48,13 +48,15 @@
         <% end %>
       </ul>
     </nav>
-    <h1 class="bg-amber-100 m-15 p-10 pl-20 text-5xl text-black font-light font-serif"> notKnitting </h1>
+    <h1 class="bg-amber-100 m-15 p-10 pl-20 text-5xl text-black font-light font-serif"> 
+    <div class="div-img"><img src="Untitled 3.png"></div>
+    notKnitting </h1>
 <html lang="en" class="[scrollbar-gutter:stable]">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" · Phoenix Framework">
+    <.live_title suffix="">
       <%= assigns[:page_title] || "NotKnitting" %>
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />

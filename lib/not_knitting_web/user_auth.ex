@@ -183,6 +183,22 @@ defmodule NotKnittingWeb.UserAuth do
 
   def on_mount(:require_user_owns_pattern, _params, _session, socket), do: {:cont, socket}
 
+  def on_mount(:require_user_owns_message, %{"id" => message_id}, _session, socket) do
+    message = Messages.get_message!(message_id)
+    if socket.assigns.current_user.id == message.user_id do
+      {:cont, socket}
+    else
+      socket =
+        socket
+        |> Phoenix.LiveView.put_flash(:error, "You must own this resource to access this page.")
+        |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
+
+      {:halt, socket}
+    end
+  end
+
+  def on_mount(:require_user_owns_message, _params, _session, socket), do: {:cont, socket}
+
   def on_mount(:redirect_if_user_is_authenticated, _params, session, socket) do
     socket = mount_current_user(socket, session)
 

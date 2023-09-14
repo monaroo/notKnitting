@@ -17,9 +17,11 @@ defmodule NotKnitting.Application do
       # Start Finch
       {Finch, name: NotKnitting.Finch},
       # Start the Endpoint (http/https)
-      NotKnittingWeb.Endpoint
+      NotKnittingWeb.Endpoint,
       # Start a worker by calling: NotKnitting.Worker.start_link(arg)
       # {NotKnitting.Worker, arg}
+      {Oban, Application.fetch_env!(:not_knitting, Oban)}
+      # start Oban
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

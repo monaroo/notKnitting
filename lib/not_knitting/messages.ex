@@ -19,6 +19,7 @@ defmodule NotKnitting.Messages do
   )
     |> Repo.all()
     |> Repo.preload(:user)
+    |> Repo.preload(:replies)
 
   end
 
@@ -61,6 +62,14 @@ defmodule NotKnitting.Messages do
     Repo.delete(message)
   end
 
+  def delete_old_messages do
+    back_24_h = :timer.hours(24) * -1
+    cutoff = DateTime.utc_now() |> DateTime.add(back_24_h, :second)
+    from(m in Message, where: m.inserted_at < ^cutoff)
+    |> Repo.delete()
+
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking message changes.
 
@@ -71,7 +80,7 @@ defmodule NotKnitting.Messages do
   end
 
   defp preloaded_message({:ok, message}) do
-    message = Repo.preload(message, [:user])
+    message = Repo.preload(message, [:user, :replies])
     {:ok, message}
   end
 

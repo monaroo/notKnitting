@@ -5,6 +5,7 @@ defmodule NotKnitting.Messages.Message do
   schema "messages" do
     field(:content, :string)
     belongs_to(:user, NotKnitting.Accounts.User)
+    has_many :replies, NotKnitting.Replies.Reply
 
     timestamps()
   end
