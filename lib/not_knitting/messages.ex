@@ -18,9 +18,7 @@ defmodule NotKnitting.Messages do
     order_by: [{:desc, :updated_at}]
   )
     |> Repo.all()
-    |> Repo.preload(:user)
-    |> Repo.preload(:replies)
-
+    |> Repo.preload([:user, [replies: :user]])
   end
 
   @doc """
@@ -30,7 +28,7 @@ defmodule NotKnitting.Messages do
 
 
   """
-  def get_message!(id), do: Repo.get!(Message, id) |> Repo.preload([:user])
+  def get_message!(id), do: Repo.get!(Message, id) |> Repo.preload([:user, [replies: :user]])
 
   @doc """
   Creates a message.
@@ -80,7 +78,7 @@ defmodule NotKnitting.Messages do
   end
 
   defp preloaded_message({:ok, message}) do
-    message = Repo.preload(message, [:user, :replies])
+    message = Repo.preload(message, [:user, [replies: :user]])
     {:ok, message}
   end
 

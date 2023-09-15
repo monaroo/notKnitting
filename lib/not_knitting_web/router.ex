@@ -40,6 +40,8 @@ defmodule NotKnittingWeb.Router do
 
           live "/messages/new", MessageLive.Index, :new
           live "/messages/:id/edit", MessageLive.Index, :edit
+          live "/messages/:id/replies", MessageLive.Index, :new_reply
+          live "/messages/:id/replies/:reply_id/edit", MessageLive.Index, :edit_reply
 
         # live "/comments/new", CommentLive.Index, :new
      end

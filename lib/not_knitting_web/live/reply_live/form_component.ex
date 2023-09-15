@@ -30,6 +30,7 @@ defmodule NotKnittingWeb.ReplyLive.FormComponent do
 
   @impl true
   def update(%{reply: reply} = assigns, socket) do
+    IO.inspect("------------------------- update with reply")
     changeset = Replies.change_reply(reply)
 
     {:ok,
@@ -41,24 +42,20 @@ defmodule NotKnittingWeb.ReplyLive.FormComponent do
   def update(assigns, socket) do
     assigns
     |> Map.keys()
-    |> IO.inspect(label: "generic update, assigns:")
+    |> IO.inspect(label: "???????????????????? generic update, assigns:")
 
-    {:ok,
-     socket}
-
+    {:ok, socket}
   end
 
 
   @impl true
   def handle_event("validate", %{"reply" => reply_params}, socket) do
-    reply_params = Map.put(reply_params, "pattern_id", socket.assigns.id)
+    reply_params = Map.put(reply_params, "message_id", socket.assigns.id)
 
     changeset =
       socket.assigns.reply
       |> Replies.change_reply(reply_params)
       |> Map.put(:action, :validate)
-      |> IO.inspect(label: "changeset in validate")
-      |> dbg()
 
     {:noreply, assign_form(socket, changeset)}
   end
@@ -66,7 +63,7 @@ defmodule NotKnittingWeb.ReplyLive.FormComponent do
 
 
   def handle_event("save", %{"reply" => reply_params}, socket) do
-    reply_params = Map.put(reply_params, "pattern_id", socket.assigns.id)
+    reply_params = Map.put(reply_params, "message_id", socket.assigns.id)
 
     save_reply(socket, socket.assigns.action, reply_params)
   end
@@ -127,6 +124,7 @@ defmodule NotKnittingWeb.ReplyLive.FormComponent do
   # end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    IO.inspect("ok, we're assigning a form!!!!")
     assign(socket, :form, to_form(changeset))
   end
 

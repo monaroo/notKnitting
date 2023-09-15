@@ -54,7 +54,7 @@ defmodule NotKnitting.MixProject do
       {:ex_heroicons, "~> 2.0.0"},
       {:waffle, "~> 1.1"},
       {:waffle_ecto, ">= 0.0.0"},
-      {:oban, "~> 2.11"}
+      {:oban, "~> 2.15"}
     ]
   end
 

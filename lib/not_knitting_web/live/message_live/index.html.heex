@@ -22,6 +22,10 @@
   <:col :let={{_id, message}}>
     <div class="font-bold"><%= message.user.username %>:</div>
     <%= message.content %>
+    <div :for={reply <- message.replies}>
+      <span class="pl-5 pr-2 italic"><%= reply.user.username %>:</span>
+      <%= reply.content %>
+    </div>
   </:col>
   <:action :let={{id, message}} :if={@current_user}>
     <%= if @current_user.id == message.user_id do %>
@@ -36,7 +40,11 @@
         <%= Heroicons.icon("trash", type: "outline", class: "h-3 w-3") %>
       </.link>
     <% end %>
-    <.header> <%= IO.inspect(message.replies) %> </.header>
+    <.header>    <.link class="text-xs" patch={~p"/messages/#{message}/replies"}>
+      Reply to <%= message.user.username %>...
+    </.link>
+      
+    </.header>
   </:action>
 </.table>
 
@@ -48,10 +56,27 @@
 >
   <.live_component
     module={NotKnittingWeb.MessageLive.FormComponent}
-    id={@message.id || :new}
+    id={if is_nil(@message.id), do: :new, else: @message.id}
     title={@page_title}
     action={@live_action}
     message={@message}
+    patch={~p"/messages"}
+    current_user={@current_user}
+  />
+</.modal>
+
+<.modal
+  :if={@live_action in [:new_reply, :edit_reply]}
+  id="reply-modal"
+  show
+  on_cancel={JS.patch(~p"/messages")}
+>
+  <.live_component
+    module={NotKnittingWeb.ReplyLive.FormComponent}
+    id={@message.id}
+    title={@page_title}
+    action={@live_action}
+    reply={@reply}
     patch={~p"/messages"}
     current_user={@current_user}
   />

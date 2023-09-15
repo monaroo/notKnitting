@@ -3,6 +3,7 @@ defmodule NotKnittingWeb.MessageLive.Index do
 
   alias NotKnitting.Messages
   alias NotKnitting.Messages.Message
+  alias NotKnitting.Replies.Reply
 
   @impl true
   def mount(_params, _session, socket) do
@@ -11,7 +12,12 @@ defmodule NotKnittingWeb.MessageLive.Index do
       # Phoenix.PubSub.subscribe(NotKnitting.PubSub, "messages")
     end
 
-    {:ok, stream(socket, :messages, Messages.list_messages())}
+    socket =
+      socket
+      |> stream(:messages, Messages.list_messages())
+      |> assign(:message, nil)
+
+    {:ok, socket}
   end
 
   @impl true
@@ -35,6 +41,20 @@ defmodule NotKnittingWeb.MessageLive.Index do
     socket
     |> assign(:page_title, "Listing Messages")
     |> assign(:message, nil)
+  end
+
+  defp apply_action(socket, :new_reply, %{"id" => id} = params) do
+    IO.inspect(params, label: ">>>>>>>>>>>>>>>>>>>>>>>")
+    socket
+    |> assign(:page_title, "New reply")
+    |> assign(:message, Messages.get_message!(id))
+    |> assign(:reply, %Reply{})
+  end
+
+  defp apply_action(socket, :edit_reply, %{"id" => id}) do
+    socket
+    |> assign(:page_title, "Edit reply")
+    |> assign(:reply, Replies.get_reply!(id))
   end
 
   def handle_info(%Phoenix.Socket.Broadcast{topic: "messages", event: "new", payload: message}, socket) do

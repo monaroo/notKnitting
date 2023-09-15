@@ -6,6 +6,7 @@ defmodule NotKnittingWeb.UserAuth do
 
   alias NotKnitting.Accounts
   alias NotKnitting.Patterns
+  alias NotKnitting.Messages
 
 
 
