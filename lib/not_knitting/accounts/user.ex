@@ -38,6 +38,7 @@ defmodule NotKnitting.Accounts.User do
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password, :username])
+    |> unique_constraint(:username)
     |> validate_email(opts)
     |> validate_password(opts)
     |> validate_required(:username)

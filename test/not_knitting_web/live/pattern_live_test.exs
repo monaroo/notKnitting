@@ -2,7 +2,9 @@ defmodule NotKnittingWeb.PatternLiveTest do
   use NotKnittingWeb.ConnCase
 
   import Phoenix.LiveViewTest
+  import NotKnitting.AccountsFixtures
   import NotKnitting.PatternsFixtures
+
 
   @create_attrs %{content: "some content", title: "some title"}
   @update_attrs %{content: "some updated content", title: "some updated title"}
@@ -24,6 +26,10 @@ defmodule NotKnittingWeb.PatternLiveTest do
     end
 
     test "saves new pattern", %{conn: conn} do
+      user = user_fixture()
+      pattern = pattern_fixture(%{user: user})
+      conn = log_in_user(conn, user)
+
       {:ok, index_live, _html} = live(conn, ~p"/patterns")
 
       assert index_live |> element("a", "New Pattern") |> render_click() =~
@@ -47,9 +53,16 @@ defmodule NotKnittingWeb.PatternLiveTest do
     end
 
     test "updates pattern in listing", %{conn: conn, pattern: pattern} do
+      user = user_fixture()
+      pattern = pattern_fixture(%{user: user})
+      conn = log_in_user(conn, user)
+
       {:ok, index_live, _html} = live(conn, ~p"/patterns")
 
-      assert index_live |> element("#patterns-#{pattern.id} a", "Edit") |> render_click() =~
+
+      open_browser(index_live)
+
+      assert index_live |> element("#patterns-#{pattern.id}", "Edit") |> render_click() =~
                "Edit Pattern"
 
       assert_patch(index_live, ~p"/patterns/#{pattern}/edit")
@@ -69,8 +82,12 @@ defmodule NotKnittingWeb.PatternLiveTest do
       assert html =~ "some updated content"
     end
 
-    test "deletes pattern in listing", %{conn: conn, pattern: pattern} do
+    test "deletes pattern in listing", %{conn: conn} do
+      user = user_fixture()
+      pattern = pattern_fixture(%{user: user})
+      conn = log_in_user(conn, user)
       {:ok, index_live, _html} = live(conn, ~p"/patterns")
+
 
       assert index_live |> element("#patterns-#{pattern.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#patterns-#{pattern.id}")
@@ -88,7 +105,12 @@ defmodule NotKnittingWeb.PatternLiveTest do
     end
 
     test "updates pattern within modal", %{conn: conn, pattern: pattern} do
+      user = user_fixture()
+      pattern = pattern_fixture(%{user: user})
+      conn = log_in_user(conn, user)
+
       {:ok, show_live, _html} = live(conn, ~p"/patterns/#{pattern}")
+
 
       assert show_live |> element("a", "Edit") |> render_click() =~
                "Edit Pattern"

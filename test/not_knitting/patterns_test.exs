@@ -7,8 +7,9 @@ defmodule NotKnitting.PatternsTest do
     alias NotKnitting.Patterns.Pattern
 
     import NotKnitting.PatternsFixtures
+    import NotKnitting.AccountsFixtures
 
-    @invalid_attrs %{content: nil, title: nil}
+    @invalid_attrs %{content: nil, title: nil, user_id: nil}
 
     test "list_patterns/0 returns all patterns" do
       pattern = pattern_fixture()
@@ -21,7 +22,8 @@ defmodule NotKnitting.PatternsTest do
     end
 
     test "create_pattern/1 with valid data creates a pattern" do
-      valid_attrs = %{content: "some content", title: "some title"}
+      user = user_fixture()
+      valid_attrs = %{content: "some content", title: "some title", user_id: user.id}
 
       assert {:ok, %Pattern{} = pattern} = Patterns.create_pattern(valid_attrs)
       assert pattern.content == "some content"
@@ -29,7 +31,7 @@ defmodule NotKnitting.PatternsTest do
     end
 
     test "create_pattern/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Patterns.create_pattern(@invalid_attrs)
+      assert {:error, :pattern, %Ecto.Changeset{errors: errors}, %{}} = Patterns.create_pattern(@invalid_attrs)
     end
 
     test "update_pattern/2 with valid data updates the pattern" do

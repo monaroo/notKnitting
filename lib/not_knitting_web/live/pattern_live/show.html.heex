@@ -23,6 +23,7 @@
     </:col>
     <:col :let={comment}><%= comment.inserted_at %></:col>
     <:col :let={comment}>
+      <%= if @current_user do %>
        <%= if comment.user_id == @current_user.id do %> 
         <div class="invisible group-hover:visible">
           <.link
@@ -41,8 +42,19 @@
             <.button><%= Heroicons.icon("trash", type: "outline", class: "h-3 w-3") %></.button>
           </.link>
           </div>
+
          <% end %> 
-    </:col>
+
+      <%= else %>
+              
+
+        <div class="mt-10">
+        <.link class="underline" patch={~p"/users/register"}>Log in</.link> to comment!
+        </div>
+    
+      <% end %> 
+         </:col>
+
   </.table>
 </div>
 <.header>

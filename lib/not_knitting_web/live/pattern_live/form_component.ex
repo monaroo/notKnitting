@@ -29,7 +29,7 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
         <%= if Enum.any?(@uploads.photo.entries) do %>
           <.live_img_preview entry={hd(@uploads.photo.entries)} width="75" />
         <% else %>
-          <img src={@pattern.photo} :if={@pattern.photo} width="100"/>
+          <img src={@pattern.photo.file_name} :if={@pattern.photo} width="100"/>
         <% end %>
         <:actions>
           <.button phx-disable-with="Saving...">Save Pattern</.button>
@@ -102,7 +102,7 @@ defp save_pattern(socket, :edit, pattern_params) do
   end
 end
 
-defp save_pattern(socket, :new, pattern_params) do
+defp save_pattern(_socket, :new, pattern_params) do
   case Patterns.create_pattern(pattern_params) do
     {:ok, pattern} ->
       notify_parent({:saved, pattern})

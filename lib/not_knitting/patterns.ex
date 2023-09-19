@@ -66,7 +66,6 @@ defmodule NotKnitting.Patterns do
     |> Ecto.Multi.update(:pattern_with_photo, &Pattern.photo_changeset(&1.pattern, attrs))
     |> Repo.transaction()
     |> preloaded_pattern()
-    |> dbg()
   end
 
   @doc """

@@ -9,7 +9,8 @@ defmodule NotKnitting.PatternsFixtures do
   Generate a pattern.
   """
   def pattern_fixture(attrs \\ %{}) do
-    user = AccountsFixtures.user_fixture()
+    user = Map.get(attrs, :user, AccountsFixtures.user_fixture())
+
     {:ok, pattern} =
       attrs
       |> Enum.into(%{
