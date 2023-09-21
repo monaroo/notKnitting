@@ -1,9 +1,9 @@
 defmodule NotKnittingWeb.PageController do
   use NotKnittingWeb, :controller
+  alias NotKnitting.Patterns
 
   def home(conn, _params) do
-    # The home page is often custom made,
-    # so skip the default app layout.
-    render(conn, :home, layout: false)
+    patterns = Patterns.list_patterns(limit: 6)
+    render(conn, :home, layout: false, patterns: patterns)
   end
 end

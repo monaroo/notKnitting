@@ -30,6 +30,17 @@ defmodule NotKnitting.Patterns do
     |> Repo.preload([:user, :comments])
   end
 
+  def search_patterns(match_string \\ "") do
+    query = "%#{match_string}%"
+
+
+    from(p in Pattern,
+      where: ilike(p.content, ^query) or ilike(p.title, ^query),
+      order_by: [{:desc, :updated_at}]
+    )
+    |> Repo.all()
+    |> Repo.preload([:user, :comments])
+  end
 
 
   @doc """

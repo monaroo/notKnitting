@@ -1,1 +1,34 @@
 
+<header class="font-bold text-2xl m-12 font-serif"> Welcome, fellow crocheter! </header>
+<div class="ml-12 mr-12 mb-12 text-xl font-serif ">  Whether you have years of crochet experience or you recently got hooked, notKnitting.com is the place for YOU! </div>
+<%!-- <div
+  id="patterns"
+  rows={@patterns}
+  row_click={fn {id, pattern} -> JS.navigate(~p"/patterns/#{id}") end}
+>
+  <:col :let={{_id, pattern}}>
+    <img src={NotKnitting.Photo.url({pattern.photo, pattern}, :thumb)} width="75"/>
+  </:col>
+ 
+
+
+</div> --%>
+<ul>
+  <li :for={pattern <- @patterns}>
+  <.link patch={~p"/patterns/#{pattern}"}>
+    <img src={NotKnitting.Photo.url({pattern.photo, pattern}, :thumb)} width="75"/>
+  </.link>
+  </li>
+</ul>
+
+<ul>
+<li class="inline font-bold text-xl p-12 font-serif"><span class="inline-block mr-2"> <%= Heroicons.icon("light-bulb", type: "outline", class: "h-5 w-5") %>  </span> Discover</li>
+<div class="ml-12 mr-12 text-xl font-serif pb-12"> Discover your new favorite pattern, technique, or project! </div>
+<li class="inline font-bold text-xl p-12 font-serif"><span class="inline-block mr-2"><%= Heroicons.icon("megaphone", type: "outline", class: "h-5 w-5") %> </span>Give Feedback</li>
+<div class="ml-12 mr-12 text-xl font-serif pb-12">Connect with the crochet community by commenting on patterns you <span class="inline-block mr-2"><%= Heroicons.icon("heart", type: "outline", class: "h-5 w-5") %></span>!</div>
+<li class="inline font-bold text-xl p-12 font-serif"><span class="inline-block mr-2"><%= Heroicons.icon("sparkles", type: "outline", class: "h-5 w-5") %></span>Share Your Faves</li>
+<div class="ml-12 mr-12 text-xl font-serif  pb-12">Show off your expertise and post your favorite projects!</div>
+<li class="inline font-bold text-xl p-12 font-serif"><span class="inline-block mr-1"><%= Heroicons.icon("chat-bubble-left-right", type: "outline", class: "h-5 w-5") %></span>Join the Discussion</li>
+<div class="ml-12 mr-12 text-xl font-serif  pb-12">Ask questions, answer questions, and give general feedback on the live forum!</div>
+</ul>
+
