@@ -1,4 +1,13 @@
 
+      <.simple_form for={@form} id="search-form" phx-submit="search">
+        <.input field={@form[:query]} placeholder="Search..." required />
+        <:actions>
+          <.button phx-disable-with="Searching..." class="w-full">
+            Search
+          </.button>
+        </:actions>
+      </.simple_form>
+      
 <.table
   id="patterns"
   rows={@streams.patterns}

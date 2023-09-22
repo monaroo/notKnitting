@@ -61,11 +61,17 @@ defmodule NotKnitting.Messages do
   end
 
   def delete_old_messages do
-    back_24_h = :timer.hours(24) * -1
-    cutoff = DateTime.utc_now() |> DateTime.add(back_24_h, :second)
-    from(m in Message, where: m.inserted_at < ^cutoff)
-    |> Repo.delete()
-
+    try do
+      back_24_h = :timer.hours(24) * -1
+      cutoff = DateTime.utc_now() |> DateTime.add(back_24_h, :millisecond)
+      from(m in Message, where: m.inserted_at < ^cutoff)
+      |> IO.inspect(label: ">>> the delete query")
+      |> Repo.delete_all()
+      |> IO.inspect(label: ">>> the delete result")
+    rescue
+      e ->
+        IO.inspect(e, label: "the error")
+    end
   end
 
   @doc """

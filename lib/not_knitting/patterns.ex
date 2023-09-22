@@ -30,7 +30,7 @@ defmodule NotKnitting.Patterns do
     |> Repo.preload([:user, :comments])
   end
 
-  def search_patterns(match_string \\ "") do
+  def search_patterns(match_string, limit \\ 10) do
     query = "%#{match_string}%"
 
 

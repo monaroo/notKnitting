@@ -3,6 +3,7 @@ defmodule NotKnitting.Workers.DeleteOldMessages do
 
   @impl true
   def perform(_params) do
+    IO.puts("******** DELETING OLD MESSAGES **********")
     NotKnitting.Messages.delete_old_messages()
 
     :ok

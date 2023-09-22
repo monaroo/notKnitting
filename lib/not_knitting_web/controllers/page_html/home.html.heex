@@ -1,6 +1,6 @@
 
-<header class="font-bold text-2xl m-12 font-serif"> Welcome, fellow crocheter! </header>
-<div class="ml-12 mr-12 mb-12 text-xl font-serif ">  Whether you have years of crochet experience or you recently got hooked, notKnitting.com is the place for YOU! </div>
+<header class="font-bold text-2xl m-12 mb-8 font-serif"> Hello, fellow crocheter! </header>
+<div class="ml-12 mr-12 text-xl font-serif pb-12">Welcome to notKnitting.com, a digital platform specifically curated for crochet supremists. Whether you have years of crochet experience or you recently got hooked, notKnitting.com is the place for YOU! </div>
 <%!-- <div
   id="patterns"
   rows={@patterns}
@@ -13,22 +13,27 @@
 
 
 </div> --%>
-<ul>
-  <li :for={pattern <- @patterns}>
-  <.link patch={~p"/patterns/#{pattern}"}>
-    <img src={NotKnitting.Photo.url({pattern.photo, pattern}, :thumb)} width="75"/>
-  </.link>
-  </li>
-</ul>
+
 
 <ul>
 <li class="inline font-bold text-xl p-12 font-serif"><span class="inline-block mr-2"> <%= Heroicons.icon("light-bulb", type: "outline", class: "h-5 w-5") %>  </span> Discover</li>
 <div class="ml-12 mr-12 text-xl font-serif pb-12"> Discover your new favorite pattern, technique, or project! </div>
 <li class="inline font-bold text-xl p-12 font-serif"><span class="inline-block mr-2"><%= Heroicons.icon("megaphone", type: "outline", class: "h-5 w-5") %> </span>Give Feedback</li>
-<div class="ml-12 mr-12 text-xl font-serif pb-12">Connect with the crochet community by commenting on patterns you <span class="inline-block mr-2"><%= Heroicons.icon("heart", type: "outline", class: "h-5 w-5") %></span>!</div>
+<div class="ml-12 mr-12 text-xl font-serif pb-12">Connect with the crochet community by commenting on patterns you ❤️!</div>
 <li class="inline font-bold text-xl p-12 font-serif"><span class="inline-block mr-2"><%= Heroicons.icon("sparkles", type: "outline", class: "h-5 w-5") %></span>Share Your Faves</li>
 <div class="ml-12 mr-12 text-xl font-serif  pb-12">Show off your expertise and post your favorite projects!</div>
-<li class="inline font-bold text-xl p-12 font-serif"><span class="inline-block mr-1"><%= Heroicons.icon("chat-bubble-left-right", type: "outline", class: "h-5 w-5") %></span>Join the Discussion</li>
+<li class="inline font-bold text-xl p-12 font-serif"><span class="inline-block mr-1"><%= Heroicons.icon("chat-bubble-left-right", type: "outline", class: "h-5 w-5") %></span>Join The Discussion</li>
 <div class="ml-12 mr-12 text-xl font-serif  pb-12">Ask questions, answer questions, and give general feedback on the live forum!</div>
+<div class="underline ml-12 mr-12 text-xl font-serif  pb-12"><a href={~p"/users/register"}>Get Started!<span class="inline-block mr-2"><%= Heroicons.icon("arrow-right", type: "outline", class: "h-5 w-5") %></span> </a></div>
 </ul>
+ <span class="m-12 mb-2 font-serif">View the latest patterns:</span>
 
+<div class=" mb-200 font-serif">
+<ul class="inline-block ml-6">
+  <li class="shadow hover:shadow-xl inline-block m-6" :for={pattern <- @patterns}>
+  <.link patch={~p"/patterns/#{pattern}"}>
+    <img src={NotKnitting.Photo.url({pattern.photo, pattern}, :thumb)} width="75"/>
+  </.link>
+  </li>
+</ul>
+</div>

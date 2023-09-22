@@ -56,6 +56,7 @@ defmodule NotKnittingWeb.Router do
     # live "/patterns/:id/edit", PatternLive.Index, :edit
     live_session :patterns, on_mount: [{NotKnittingWeb.UserAuth, :mount_current_user}] do
     live "/patterns", PatternLive.Index, :index
+    live "/patterns/search", PatternLive.Search, :search_index
     live "/patterns/:id", PatternLive.Show, :show
     end
     # live "/patterns/:id/show/edit", PatternLive.Show, :edit

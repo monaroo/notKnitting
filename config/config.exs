@@ -72,7 +72,7 @@ config :not_knitting, Oban,
     Oban.Plugins.Pruner,
     {Oban.Plugins.Cron,
      crontab: [
-       {"0 * * * *", NotKnitting.Workers.DeleteOldMessages}
+       {"* * * * *", NotKnitting.Workers.DeleteOldMessages}
      ]}
   ],
   queues: [default: 10]
