@@ -22,8 +22,8 @@ defmodule NotKnitting.Patterns do
     offset = Keyword.get(opts, :offset, 0)
 
     from(p in Pattern,
-    order_by: [{:desc, :updated_at}]
-  )
+      order_by: [{:desc, :updated_at}]
+    )
     |> limit(^limit)
     |> offset(^offset)
     |> Repo.all()
@@ -33,7 +33,6 @@ defmodule NotKnitting.Patterns do
   def search_patterns(match_string, limit \\ 10) do
     query = "%#{match_string}%"
 
-
     from(p in Pattern,
       where: ilike(p.content, ^query) or ilike(p.title, ^query),
       order_by: [{:desc, :updated_at}]
@@ -41,7 +40,6 @@ defmodule NotKnitting.Patterns do
     |> Repo.all()
     |> Repo.preload([:user, :comments])
   end
-
 
   @doc """
   Gets a single pattern.
@@ -92,9 +90,10 @@ defmodule NotKnitting.Patterns do
 
   """
   def update_pattern(%Pattern{} = pattern, attrs) do
-    pattern
-    |> Pattern.changeset(attrs)
-    |> Repo.update()
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:pattern, Pattern.changeset(pattern, attrs))
+    |> Ecto.Multi.update(:pattern_with_photo, &Pattern.photo_changeset(&1.pattern, attrs))
+    |> NotKnitting.Repo.transaction()
     |> preloaded_pattern()
   end
 
@@ -137,5 +136,4 @@ defmodule NotKnitting.Patterns do
   end
 
   defp preloaded_pattern(error), do: error
-
 end

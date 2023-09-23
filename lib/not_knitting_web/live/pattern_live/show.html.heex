@@ -4,7 +4,21 @@
   <div title="Photo" class="mt-1500"><img src={NotKnitting.Photo.url({@pattern.photo, @pattern}, :original)} width="400"/></div>
   <div class="mt-10 text-3xl"><%= @pattern.title %></div>
   <:subtitle>posted by <%= @pattern.user.username %></:subtitle>
-
+<:actions :if={@current_user}>
+    <%= if @current_user.id == @pattern.user_id do %>
+      <.link navigate={~p"/patterns/#{@pattern}/show/edit"} phx-click={JS.push_focus()}>
+        Edit Pattern
+      </.link>
+      <.link
+        phx-click={JS.push("delete", value: %{id: @pattern.id}) |> hide("##{@pattern.id}")}
+        data-confirm="Are you sure?"
+      >
+        <div class="mt-5">
+          Delete Pattern
+        </div>
+      </.link>
+    <% end %>
+  </:actions>
 
 </.header>
 
@@ -67,21 +81,7 @@
 </.header>
 
 <.header>
-<:actions :if={@current_user}>
-    <%= if @current_user.id == @pattern.user_id do %>
-      <.link navigate={~p"/patterns/#{@pattern}/show/edit"} phx-click={JS.push_focus()}>
-        Edit Pattern
-      </.link>
-      <.link
-        phx-click={JS.push("delete", value: %{id: @pattern.id}) |> hide("##{@pattern.id}")}
-        data-confirm="Are you sure?"
-      >
-        <div class="mt-5">
-          Delete Pattern
-        </div>
-      </.link>
-    <% end %>
-  </:actions>
+
   </.header>
 
 <.modal

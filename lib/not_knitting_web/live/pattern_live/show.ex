@@ -31,7 +31,7 @@ defmodule NotKnittingWeb.PatternLive.Show do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    id = List.last(String.split(id, "-"))
+   
     current_user = socket.assigns.current_user
     %{user_id: user_id} = pattern = Patterns.get_pattern!(id)
 
