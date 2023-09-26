@@ -9,6 +9,7 @@ defmodule NotKnittingWeb.MessageLive.Index do
   def mount(_params, _session, socket) do
     if connected?(socket) do
       NotKnittingWeb.Endpoint.subscribe("messages")
+      NotKnittingWeb.Endpoint.subscribe("replies")
       # Phoenix.PubSub.subscribe(NotKnitting.PubSub, "messages")
     end
 
@@ -44,7 +45,6 @@ defmodule NotKnittingWeb.MessageLive.Index do
   end
 
   defp apply_action(socket, :new_reply, %{"id" => id} = params) do
-    IO.inspect(params, label: ">>>>>>>>>>>>>>>>>>>>>>>")
     socket
     |> assign(:page_title, "New reply")
     |> assign(:message, Messages.get_message!(id))
@@ -58,30 +58,47 @@ defmodule NotKnittingWeb.MessageLive.Index do
   end
 
   def handle_info(%Phoenix.Socket.Broadcast{topic: "messages", event: "new", payload: message}, socket) do
-    IO.inspect(message, label: "1 ---------->")
     {:noreply, stream_insert(socket, :messages, message, at: 0)}
   end
 
   def handle_info(%Phoenix.Socket.Broadcast{topic: "messages", event: "edit", payload: message}, socket) do
-   IO.inspect(message, label: "2 ---------->")
     {:noreply, stream_insert(socket, :messages, message, at: 0)}
   end
 
   def handle_info(%Phoenix.Socket.Broadcast{topic: "messages", event: "delete", payload: message}, socket) do
-    IO.inspect(message, label: "3 ---------->")
     {:noreply, stream_delete(socket, :messages, message)}
   end
 
+  def handle_info(%Phoenix.Socket.Broadcast{topic: "replies", event: "new", payload: reply}, socket) do
+    IO.inspect(reply.message_id)
+    {:noreply, stream_insert(socket, :messages, reply)}
+  end
+
+  # def handle_info(%Phoenix.Socket.Broadcast{topic: "replies", event: "edit", payload: reply}, socket) do
+  #   {:noreply, stream_insert(socket, :replies, reply, at: 0)}
+  # end
+
+  # def handle_info(%Phoenix.Socket.Broadcast{topic: "replies", event: "delete", payload: reply}, socket) do
+  #   {:noreply, stream_delete(socket, :replies, reply)}
+  # end
+
   @impl true
   def handle_info({NotKnittingWeb.MessageLive.FormComponent, {:saved, message}}, socket) do
-    IO.inspect(message, label: "4 ---------->")
+    IO.inspect(socket.assigns.message, label: "----------------------------")
     {:noreply, stream_insert(socket, :messages, message, at: 0)}
+
+  end
+
+  @impl true
+  def handle_info({NotKnittingWeb.ReplyLive.FormComponent, {:saved, reply}}, socket) do
+    IO.inspect(reply, label: ">>>>>>>>>>>>>>>>>>>")
+    {:noreply, stream_insert(socket, :messages, Messages.get_message!(reply.message_id), at: 0)}
+
   end
 
 
   @impl true
   def handle_info(message, socket) do
-    IO.inspect(message, label: "unexpected msg")
     {:noreply, socket}
   end
 

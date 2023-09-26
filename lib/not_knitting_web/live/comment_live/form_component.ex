@@ -38,15 +38,15 @@ defmodule NotKnittingWeb.CommentLive.FormComponent do
      |> assign_form(changeset)}
   end
 
-  def update(assigns, socket) do
-    assigns
-    |> Map.keys()
-    |> IO.inspect(label: "generic update, assigns:")
+  # def update(assigns, socket) do
+  #   assigns
+  #   |> Map.keys()
+  #   |> IO.inspect(label: "generic update, assigns:")
 
-    {:ok,
-     socket}
+  #   {:ok,
+  #    socket}
 
-  end
+  # end
 
 
   @impl true
@@ -57,8 +57,6 @@ defmodule NotKnittingWeb.CommentLive.FormComponent do
       socket.assigns.comment
       |> Comments.change_comment(comment_params)
       |> Map.put(:action, :validate)
-      |> IO.inspect(label: "changeset in validate")
-      |> dbg()
 
     {:noreply, assign_form(socket, changeset)}
   end
@@ -72,7 +70,6 @@ defmodule NotKnittingWeb.CommentLive.FormComponent do
   end
 
   defp save_comment(socket, :edit_comment, comment_params) do
-    IO.inspect(comment_params, label: "params in edit")
 
     case Comments.update_comment(socket.assigns.comment, comment_params) do
       {:ok, comment} ->
@@ -89,11 +86,9 @@ defmodule NotKnittingWeb.CommentLive.FormComponent do
   end
 
   defp save_comment(socket, :new_comment, comment_params) do
-    IO.inspect(comment_params, label: "params in create")
 
     case Comments.create_comment(comment_params) do
       {:ok, comment} ->
-        IO.inspect("saved ok")
         notify_parent({:saved, comment})
 
         {:noreply,

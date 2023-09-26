@@ -1,12 +1,16 @@
 
-      <.simple_form for={@form} id="search-form" phx-submit="search">
+     <.simple_form  for={@form} id="search-form" phx-submit="search">
         <.input field={@form[:query]} placeholder="Search..." required />
         <:actions>
-          <.button phx-disable-with="Searching..." class="w-full">
+          <.button phx-disable-with="Searching..." class="justify-center">
             Search
           </.button>
+
         </:actions>
       </.simple_form>
+
+           <.back navigate={~p"/patterns"}>Back to All Patterns</.back>
+
       
 <.table
   id="patterns"
@@ -14,19 +18,19 @@
   row_click={fn {id, pattern} -> JS.navigate(~p"/patterns/#{id}") end}
 >
   <:col :let={{_id, pattern}}>
-    <img src={NotKnitting.Photo.url({pattern.photo, pattern}, :thumb)} width="75"/>
+    <img src={NotKnitting.Photo.url({pattern.photo, pattern}, :thumb)} width="250"/>
   </:col>
-  <:col :let={{_id, pattern}}>
-    <%= pattern.title %>
-    <div>by <%= pattern.user.username %></div>
+ <:col :let={{_id, pattern}}>
+    <div class="font-bold"><%= pattern.title %></div>
+    <div class="pb-5">by <%= pattern.user.username %></div>
+    <%= Index.truncate_text(pattern.content) %>
   </:col>
-  <:col :let={{_id, pattern}}><%= (pattern.content) %></:col>
+  <%!-- <:col :let={{_id, pattern}}><%= Index.truncate_text(pattern.content) %></:col> --%>
   <:action :let={{_id, pattern}}>
     <div class="sr-only">
       <.link navigate={~p"/patterns/#{pattern}"}>Show</.link>
     </div>
   </:action>
-  <span :if={!@current_user}>no current user</span>
   <:action :let={{id, pattern}} :if={@current_user}>
     <%= if @current_user.id == pattern.user_id do %>
       <.link class="mr-3" patch={~p"/patterns/#{pattern}/edit"}>Edit</.link>
@@ -36,8 +40,6 @@
       >
         Delete
       </.link>
-    <% else %>
-      <span>Current user id is <%= @current_user.id %>, pattern user id is <%= pattern.user_id %>.</span>
     <% end %>
   </:action>
 </.table>

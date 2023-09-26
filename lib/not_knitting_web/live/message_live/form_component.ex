@@ -63,7 +63,6 @@ defmodule NotKnittingWeb.MessageLive.FormComponent do
     case Messages.update_message(socket.assigns.message, message_params) do
       {:ok, message} ->
         notify_parent({:saved, message})
-        IO.inspect("here!!!!!!!")
         NotKnittingWeb.Endpoint.broadcast_from(self(), "messages", "edit", message)
         # Phoenix.PubSub.broadcast(NotKnitting.PubSub, "messages", {:message_update, message})
 

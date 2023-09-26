@@ -1,6 +1,7 @@
 defmodule NotKnittingWeb.PatternLive.Search do
   use NotKnittingWeb, :live_view
 
+  alias NotKnittingWeb.PatternLive.Index
   alias NotKnitting.Patterns
   alias NotKnitting.Patterns.Pattern
 
@@ -16,7 +17,8 @@ defmodule NotKnittingWeb.PatternLive.Search do
     |> assign(:page, 1)
     |> assign(:limit, @limit)
     |> assign(:form, to_form(empty_search))
-    |> stream(:patterns, Patterns.search_patterns("", @limit))
+    |> stream(:patterns, [])
+    # |> assign(:patterns, [])
   }
   end
 

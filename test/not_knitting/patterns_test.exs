@@ -45,7 +45,7 @@ defmodule NotKnitting.PatternsTest do
 
     test "update_pattern/2 with invalid data returns error changeset" do
       pattern = pattern_fixture()
-      assert {:error, %Ecto.Changeset{}} = Patterns.update_pattern(pattern, @invalid_attrs)
+      assert {:error, :pattern, %Ecto.Changeset{errors: errors}, %{}} = Patterns.update_pattern(pattern, @invalid_attrs)
       assert pattern == Patterns.get_pattern!(pattern.id)
     end
 

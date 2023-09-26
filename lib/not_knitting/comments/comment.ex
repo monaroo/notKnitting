@@ -13,7 +13,6 @@ defmodule NotKnitting.Comments.Comment do
   @doc false
   def changeset(comment, attrs) do
     comment
-    # |> IO.inspect()
     |> cast(attrs, [:content, :pattern_id, :user_id])
     |> validate_required([:content, :pattern_id, :user_id])
     |> foreign_key_constraint(:pattern_id)

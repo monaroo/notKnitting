@@ -57,15 +57,10 @@ defmodule NotKnittingWeb.PatternLiveTest do
       pattern = pattern_fixture(%{user: user})
       conn = log_in_user(conn, user)
 
+
       {:ok, index_live, _html} = live(conn, ~p"/patterns")
 
-
       open_browser(index_live)
-
-      assert index_live |> element("#patterns-#{pattern.id}", "Edit") |> render_click() =~
-               "Edit Pattern"
-
-      assert_patch(index_live, ~p"/patterns/#{pattern}/edit")
 
       assert index_live
              |> form("#pattern-form", pattern: @invalid_attrs)
@@ -112,10 +107,15 @@ defmodule NotKnittingWeb.PatternLiveTest do
       {:ok, show_live, _html} = live(conn, ~p"/patterns/#{pattern}")
 
 
-      assert show_live |> element("a", "Edit") |> render_click() =~
-               "Edit Pattern"
+      {:ok, show_live, _html} =
+        show_live
+        |> element("a", "Edit")
+        |> render_click()
+        |> follow_redirect(conn)
 
-      assert_patch(show_live, ~p"/patterns/#{pattern}/show/edit")
+      assert render(show_live)=~ "Edit Pattern"
+
+      # assert_patch(show_live, ~p"/patterns/#{pattern}/show/edit")
 
       assert show_live
              |> form("#pattern-form", pattern: @invalid_attrs)

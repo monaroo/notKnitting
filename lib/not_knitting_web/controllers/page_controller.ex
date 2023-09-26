@@ -3,7 +3,7 @@ defmodule NotKnittingWeb.PageController do
   alias NotKnitting.Patterns
 
   def home(conn, _params) do
-    patterns = Patterns.list_patterns(limit: 6)
+    patterns = Patterns.list_patterns(limit: 8)
     render(conn, :home, layout: false, patterns: patterns)
   end
 end

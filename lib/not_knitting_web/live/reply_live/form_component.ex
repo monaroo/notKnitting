@@ -30,7 +30,6 @@ defmodule NotKnittingWeb.ReplyLive.FormComponent do
 
   @impl true
   def update(%{reply: reply} = assigns, socket) do
-    IO.inspect("------------------------- update with reply")
     changeset = Replies.change_reply(reply)
 
     {:ok,
@@ -39,13 +38,13 @@ defmodule NotKnittingWeb.ReplyLive.FormComponent do
      |> assign_form(changeset)}
   end
 
-  def update(assigns, socket) do
-    assigns
-    |> Map.keys()
-    |> IO.inspect(label: "???????????????????? generic update, assigns:")
+  # def update(assigns, socket) do
+  #   assigns
+  #   |> Map.keys()
+  #   |> IO.inspect(label: "???????????????????? generic update, assigns:")
 
-    {:ok, socket}
-  end
+  #   {:ok, socket}
+  # end
 
 
   @impl true
@@ -69,7 +68,6 @@ defmodule NotKnittingWeb.ReplyLive.FormComponent do
   end
 
   defp save_reply(socket, :edit_reply, reply_params) do
-    IO.inspect(reply_params, label: "params in edit")
 
     case Replies.update_reply(socket.assigns.reply, reply_params) do
       {:ok, reply} ->
@@ -86,7 +84,6 @@ defmodule NotKnittingWeb.ReplyLive.FormComponent do
   end
 
   defp save_reply(socket, :new_reply, reply_params) do
-    IO.inspect(reply_params, label: "params in create")
 
     case Replies.create_reply(reply_params) do
       {:ok, reply} ->

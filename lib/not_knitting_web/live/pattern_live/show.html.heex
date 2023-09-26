@@ -73,7 +73,7 @@
 </div>
 <.header>
   <:actions :if={@current_user}>
-    <.link patch={~p"/patterns/#{@pattern}/comments/new"}>
+    <.link class="mt-5" patch={~p"/patterns/#{@pattern}/comments/new"}>
       <.button>Add a comment...</.button>
     </.link>
   </:actions>
