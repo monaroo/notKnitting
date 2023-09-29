@@ -10,7 +10,7 @@ defmodule NotKnittingWeb.PatternLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage pattern records in your database.</:subtitle>
+        <:subtitle>New Pattern</:subtitle>
       </.header>
 
       <.simple_form

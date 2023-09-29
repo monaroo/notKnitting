@@ -7,9 +7,7 @@ defmodule NotKnittingWeb.CommentLive.FormComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <.header>
-        <:subtitle>Use this form to manage comment records in your database.</:subtitle>
-      </.header>
+
 
       <.simple_form
         for={@form}

@@ -7,9 +7,7 @@ defmodule NotKnittingWeb.MessageLive.FormComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <.header>
-        <:subtitle>Use this form to manage message records in your database.</:subtitle>
-      </.header>
+
 
       <.simple_form
         for={@form}

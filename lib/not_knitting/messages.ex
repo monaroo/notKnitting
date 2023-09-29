@@ -7,6 +7,7 @@ defmodule NotKnitting.Messages do
   alias NotKnitting.Repo
 
   alias NotKnitting.Messages.Message
+  alias NotKnitting.Replies.Reply
 
   @doc """
   Returns the list of messages.
@@ -15,10 +16,21 @@ defmodule NotKnitting.Messages do
   """
   def list_messages do
     from(m in Message,
-    order_by: [{:desc, :updated_at}]
-  )
+      join: r in assoc(m, :replies),
+      order_by: [desc: fragment("COALESCE(MAX(?), ?)", r.updated_at, m.updated_at)],
+      group_by: [m.id]
+    )
     |> Repo.all()
-    |> Repo.preload([:user, [replies: :user]])
+    |> Repo.preload([
+      :user,
+      replies: replies_subquery()
+    ])
+  end
+
+  defp replies_subquery do
+    from r in Reply,
+      order_by: [:updated_at],
+      preload: [:user]
   end
 
   @doc """
@@ -28,7 +40,11 @@ defmodule NotKnitting.Messages do
 
 
   """
-  def get_message!(id), do: Repo.get!(Message, id) |> Repo.preload([:user, [replies: :user]])
+  def get_message!(id) do
+    Message
+    |> Repo.get!(id)
+    |> Repo.preload([:user, [replies: replies_subquery()]])
+  end
 
   @doc """
   Creates a message.
@@ -61,10 +77,11 @@ defmodule NotKnitting.Messages do
   end
 
   def delete_old_messages do
-      back_24_h = :timer.hours(24) * -1
-      cutoff = DateTime.utc_now() |> DateTime.add(back_24_h, :millisecond)
-      from(m in Message, where: m.inserted_at < ^cutoff)
-      |> Repo.delete_all()
+    back_24_h = :timer.hours(24) * -1
+    cutoff = DateTime.utc_now() |> DateTime.add(back_24_h, :millisecond)
+
+    from(m in Message, where: m.updated_at < ^cutoff)
+    |> Repo.delete_all()
   end
 
   @doc """
@@ -77,7 +94,7 @@ defmodule NotKnitting.Messages do
   end
 
   defp preloaded_message({:ok, message}) do
-    message = Repo.preload(message, [:user, [replies: :user]])
+    message = Repo.preload(message, [:user, [replies: replies_subquery()]])
     {:ok, message}
   end
 

@@ -1,6 +1,6 @@
 
      <.simple_form  for={@form} id="search-form" phx-submit="search">
-        <.input field={@form[:query]} placeholder="Search..." required />
+        <.input field={@form[:query]} placeholder="Search Pattern Title or Content..." required />
         <:actions>
           <.button phx-disable-with="Searching..." class="justify-center">
             Search

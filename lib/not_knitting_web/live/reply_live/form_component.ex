@@ -7,9 +7,7 @@ defmodule NotKnittingWeb.ReplyLive.FormComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <.header>
-        <:subtitle>Use this form to manage reply records in your database.</:subtitle>
-      </.header>
+
 
       <.simple_form
         for={@form}
@@ -89,6 +87,8 @@ defmodule NotKnittingWeb.ReplyLive.FormComponent do
       {:ok, reply} ->
         IO.inspect("saved ok")
         notify_parent({:saved, reply})
+        IO.puts(">>>>>>> #{inspect(self())} broadcasting new reply...")
+        NotKnittingWeb.Endpoint.broadcast_from(self(), "replies", "new", reply)
 
         {:noreply,
          socket

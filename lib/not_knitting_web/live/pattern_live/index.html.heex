@@ -1,8 +1,8 @@
 <.header>
 <.link patch={~p"/patterns/search"}>
-      <div class="mb-5 bg-amber-50">Search Patterns...</div>
+      <div class="rounded-full pl-4 mb-5 bg-stone-200 font-thin">Search Patterns...</div>
     </.link>
-<div class="text-3xl">All Patterns</div>  <:actions :if={@current_user}>
+<div class=" text-3xl">All Patterns</div>  <:actions :if={@current_user}>
     <.link patch={~p"/patterns/new"}>
       <.button>New Pattern</.button>
     </.link>

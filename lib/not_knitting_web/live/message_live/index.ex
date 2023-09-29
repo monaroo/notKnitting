@@ -71,7 +71,8 @@ defmodule NotKnittingWeb.MessageLive.Index do
 
   def handle_info(%Phoenix.Socket.Broadcast{topic: "replies", event: "new", payload: reply}, socket) do
     IO.inspect(reply.message_id)
-    {:noreply, stream_insert(socket, :messages, reply)}
+    IO.puts(">>>>>>> #{inspect(self())} got notification of new reply...")
+    {:noreply, stream_insert(socket, :messages, Messages.get_message!(reply.message_id), at: 0)}
   end
 
   # def handle_info(%Phoenix.Socket.Broadcast{topic: "replies", event: "edit", payload: reply}, socket) do

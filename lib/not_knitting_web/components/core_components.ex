@@ -195,14 +195,16 @@ defmodule NotKnittingWeb.CoreComponents do
 
   def simple_form(assigns) do
     ~H"""
-    <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="mt-10 space-y-8 bg-amber-50">
+
+    <.form  :let={f} for={@for} as={@as} {@rest} class="bg-amber-50">
+      <div class="pt-10 space-y-8 bg-amber-50">
         <%= render_slot(@inner_block, f) %>
-        <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
+        <div :for={action <- @actions} class="mt-2 pl-2 pr-2 flex items-center justify-between gap-6">
           <%= render_slot(action, f) %>
         </div>
       </div>
     </.form>
+
     """
   end
 

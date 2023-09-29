@@ -77,12 +77,16 @@
       <.button>Add a comment...</.button>
     </.link>
   </:actions>
+  <:actions :if={@current_user == nil}>
+        <div>
+        <.link class="underline" patch={~p"/users/register"}>Log in</.link> to comment!
+        </div>
+    
+    </:actions>
     
 </.header>
 
-<.header>
 
-  </.header>
 
 <.modal
   :if={@live_action == :edit}
