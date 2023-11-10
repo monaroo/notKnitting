@@ -27,7 +27,7 @@ defmodule NotKnitting.Patterns do
     |> limit(^limit)
     |> offset(^offset)
     |> Repo.all()
-    |> Repo.preload([:user, :comments])
+    |> Repo.preload([:user, :comments, :hearts])
   end
 
   def search_patterns(match_string, limit \\ 10) do

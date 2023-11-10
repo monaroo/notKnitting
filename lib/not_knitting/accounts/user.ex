@@ -8,6 +8,7 @@ defmodule NotKnitting.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
     field :username, :string
+    has_many :hearts, NotKnitting.Hearts.Heart
 
     timestamps()
   end

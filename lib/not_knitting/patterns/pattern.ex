@@ -9,6 +9,7 @@ defmodule NotKnitting.Patterns.Pattern do
     field :photo, NotKnitting.Photo.Type
     belongs_to :user, NotKnitting.Accounts.User
     has_many :comments, NotKnitting.Comments.Comment
+    has_many :hearts, NotKnitting.Hearts.Heart
 
     timestamps()
   end
